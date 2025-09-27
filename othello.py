@@ -1,5 +1,4 @@
-# Team members who contributed to this project:
-#
+# Team members who contributed to this project: Daniel, Lucy, Thoan, Jad
 
 INITIAL_STATE = ('........',) * 3 + ('...XO...', '...OX...') + ('........',) * 3
 
@@ -114,25 +113,25 @@ def value(board, player, depth):
     if depth == 0:
         return score(board)
 
-    if (not legal_moves(board, 'X') or legal_moves(board, 'X') == {'pass'}) and (not legal_moves(board, 'O') or legal_moves(board, 'O') == {'pass'}):
+    # check if game over                                                       # ['pass'] = list (type now matches legal_moves())
+    if (not legal_moves(board, 'X') or legal_moves(board, 'X') == ['pass']) and (not legal_moves(board, 'O') or legal_moves(board, 'O') == ['pass']):
         return score(board)
 
     move = legal_moves(board, player)
     other = opposite(player)
-    if move == {'pass'}:
-        # other = 'O' if player == 'X' else 'X'
-        other_moves = legal_moves(board, other)
 
-        if other_moves == {'pass'}:
-            return score(board)
+    if move == ['pass']:
+        return value(board, other, depth - 1)
+
+    # evaluate all possible moves, make list of these values
+    scores = [value(successor(board, player, m), other, depth - 1) for m in move]
+
+    if player == 'X':
+        # try to max X's score when player = X
+        return max(scores)
     else:
-        return value(board, other, depth-1)
-
-
-
-
-
-
+        # try to minimize X's score when it's O's turn
+        return min(scores)
 
 def less(x, y):
     return x < y
