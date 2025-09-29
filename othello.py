@@ -148,8 +148,23 @@ def best_move(board, player, depth):
     :param depth: At least 1; greater depth is slower but smarter
     :return: The best move (index) for player
     """
-    # TODO You have to write this one
-    pass  # Start by removing this line, which is just here so that the code is valid Python
+    moves = legal_moves(board, player)
+    if moves == ['pass'] or not moves:
+        return 'pass'
+
+    best_val = None
+    best_mv = None
+    for m in moves:
+        v = value(successor(board, player, m), opposite(player), depth - 1)
+        if player == 'X':
+            if best_val is None or v > best_val:
+                best_val = v
+                best_mv = m
+        else:
+            if best_val is None or v < best_val:
+                best_val = v
+                best_mv = m
+    return best_mv
 
 
 def print_board(board):
